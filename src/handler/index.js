@@ -3,7 +3,7 @@ const { promisify } = require("util");
 const { Client } = require("discord.js");
 const Prefix = "-"
 const globPromise = promisify(glob);
-
+//a
 /**
  * @param {Client} client
  */
