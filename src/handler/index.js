@@ -1,7 +1,7 @@
 const { glob } = require("glob");
 const { promisify } = require("util");
 const { Client } = require("discord.js");
-
+const Prefix = "-"
 const globPromise = promisify(glob);
 
 /**
@@ -9,15 +9,22 @@ const globPromise = promisify(glob);
  */
 module.exports = async (client) => {
     // Commands
-    const commandFiles = await globPromise(`${process.cwd()}/src/commands/**/*.js`);
-    commandFiles.map((value) => {
-        const file = require(value);
-        const splitted = value.split("/");
-        const directory = splitted[splitted.length - 2];
+    client.on('message', message => {
+        if (message.author.bot) return;
+        if (message.channel.type == 'dm') return;
+        if (!message.content.toLowerCase().startsWith(Prefix.toLowerCase())) return;
+        if (message.content.startsWith(`<@!${client.user.id}>`) || message.content.startsWith(`<@${client.user.id}>`)) return;
 
-        if (file.name) {
-            const properties = { directory, ...file };
-            client.commands.set(file.name, properties);
+        const args = message.content
+            .trim().slice(Prefix.length)
+            .split(/ +/g);
+        const command = args.shift().toLowerCase();
+
+        try {
+            const commandFile = require(`../commands/${command}.js`)
+            commandFile.run(client, message, args);
+        } catch (err) {
+            console.error('Erro:' + err);
         }
     });
 
