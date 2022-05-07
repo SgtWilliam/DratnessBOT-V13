@@ -17,7 +17,6 @@ module.exports.run = async (discordClient, message, args) => {
 
         await message.reply({embeds: [embed]})
 
-
 };
 
 //message.react(`<:thumbsup:958437352575991819>`)
